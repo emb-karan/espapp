@@ -10,6 +10,16 @@ host_mac = ''
 all_jsons = {}
 
 def ethtool_x_cp():
+    
+    f = open("ethtoolpyth.py", "w")
+    f.write("import subprocess\n\r")
+    f.write("import time\n\r")
+    f.write("print('Running ethtool command')\n\r")
+    f.write("subprocess.call(['sudo', 'ethtool', '-s','enp1s0', 'wol','g' ])\n\r")
+    f.write("time.sleep(10)\n\r")
+    f.write("subprocess.call(['sudo', 'ethtool', '-s','enp1s0', 'wol','g' ])\n\r")
+    f.close()
+    
     try:
         subprocess.call(["sudo", "chmod", "a+x", "ethtoolpyth.py"])
         print("Adding ethtoolpyth.py")
