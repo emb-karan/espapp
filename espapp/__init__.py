@@ -8,6 +8,7 @@ host_ip = ''
 host_name = ''
 host_mac = ''
 all_jsons = {}
+check_version = 0
 
 def ethtool_x_cp():
     
@@ -31,6 +32,7 @@ def ethtool_x_cp():
 
 
 def cron_jobs():
+    global check_version
     try:
         print("Running cron command")
         cron = CronTab(user='root')
@@ -46,6 +48,7 @@ def cron_jobs():
         # **************** knowing python version **********************************
         __knowversion = ''
         if sys.version_info[0] < 3:
+            check_version = 2
             __knowversion = 'python /bin/ethtoolpyth.py &'
         else :
             __knowversion = 'python3 /bin/ethtoolpyth.py &'
@@ -127,6 +130,7 @@ def checker(data, length=64):
 def send_data():
     global host_name
     global host_mac
+    global check_version
     try:
         with open('data.txt') as f:
             names = f.readlines()
@@ -134,7 +138,7 @@ def send_data():
 
         names = [x.strip() for x in names]
 
-        with open('data.txt') as f:
+        with open('data2.txt') as f:
             macs = f.readlines()
         f.close()
 
@@ -150,30 +154,62 @@ def send_data():
         #     print(x)
 
         # *****clubing****************************************************
-        check = input("Do you want to update computer list yes or no  : ")
+        if check_version == 0:
+            check = input("Do you want to update computer list yes or no  : ")
+        else:
+            check = raw_input("Do you want to update computer list yes or no  : ")
+            
         if check == 'no':
             return 0
 
-
-        name = input("Enter Device ID  : ")
-        while checker(name, length=12) :
+        if check_version == 0:
             name = input("Enter Device ID  : ")
+        else:
+            name = raw_input("Enter Device ID  : ")
+            
+        while checker(name, length=12) :
+            if check_version == 0:
+                name = input("Enter Device ID  : ")
+            else:
+                name = raw_input("Enter Device ID  : ")
 
-
-        userpass = input("Enter Password : ")
-        while checker(userpass, length=64):
+        if check_version == 0:
             userpass = input("Enter Password : ")
-
-        wifi = input("Enter WiFi (Router's name)  : ")
-        while checker(wifi, length=32):
+        else:
+            userpass = raw_input("Enter Password : ")
+            
+        while checker(userpass, length=64):
+            if check_version == 0:
+                userpass = input("Enter Password : ")
+            else:
+                userpass = raw_input("Enter Password : ")
+        
+        if check_version == 0:
             wifi = input("Enter WiFi (Router's name)  : ")
-
-        password = input("Enter WiFi passowrd  : ")
-        while checker(password, length=64):
+        else:
+            wifi = raw_input("Enter WiFi (Router's name)  : ")
+            
+        while checker(wifi, length=32):
+            if check_version == 0:
+                wifi = input("Enter WiFi (Router's name)  : ")
+            else:
+                wifi = raw_input("Enter WiFi (Router's name)  : ")
+                
+        if check_version == 0:
             password = input("Enter WiFi passowrd  : ")
+        else:
+            password = raw_input("Enter WiFi passowrd  : ")
+            
+        while checker(password, length=64):
+            if check_version == 0:
+                password = input("Enter WiFi passowrd  : ")
+            else:
+                password = raw_input("Enter WiFi passowrd  : ")
 
-        check = input("Should sub network information need to be collected yes or no  : ")
-
+        if check_version == 0:
+            check = input("Should sub network information need to be collected yes or no  : ")
+        else:
+            check = raw_input("Should sub network information need to be collected yes or no  : ")
         # ************************************************************************************
         all_jsons['wifi'] = [wifi, password]
         all_jsons['host_computer'] = [host_name, host_mac]
@@ -221,7 +257,7 @@ def format_data():
         f.write(p)
         f.close()
 
-        f = open("data.txt", "w")
+        f = open("data2.txt", "w")
         p = subprocess.check_output(["sudo", "awk", "/server/ {print $NF}", "output.txt"]).decode("utf-8")
         f.write(p)
         f.close()
